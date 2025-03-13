@@ -37,16 +37,17 @@ function App() {
       let interval;
       let prev = query;
       try {
-        // Fetch data from an API endpoint
         const response = await fetch(`https://weather-backend-as0u.onrender.com/weather?location=${query}`);
         
-        // Check if the response is OK (status code 200-299)
         if (!response.ok) {
           setQuery(prev);
+          
+          interval = setInterval(()=>{
+            fetchData();
+          }, 60 * 1000)
           throw new Error('Network response was not ok');
         }else{
         clearInterval(interval)
-        // Parse the JSON data from the response
           const data = await response.json();
           setCurrent(data.current);
           setLocation(data.location);
@@ -54,12 +55,7 @@ function App() {
           console.log(data);
 
         }
-        // Log the data to the console
       } catch (error) {
-        interval = setInterval(()=>{
-          fetchData();
-        }, 60 * 1000)
-        // Handle errors (network issues, invalid JSON, etc.)
         console.error('There was a problem with the fetch operation:', error);
       }
 
